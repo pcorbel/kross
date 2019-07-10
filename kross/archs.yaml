@@ -1,0 +1,34 @@
+---
+archs:
+  - name: amd64
+    os: linux
+    arch: amd64
+    qemu: x86_64
+
+  - name: arm32v6
+    os: linux
+    arch: arm
+    variant: v6
+    qemu: arm
+
+  - name: arm32v7
+    os: linux
+    arch: arm
+    variant: v7
+    qemu: arm
+
+  - name: arm64v8
+    os: linux
+    arch: arm64
+    variant: v8
+    qemu: aarch64
+
+  - name: s390x
+    os: linux
+    arch: s390x
+    qemu: s390x
+
+  - name: i386
+    os: linux
+    arch: 386
+    qemu: i386

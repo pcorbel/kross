@@ -1,0 +1,3 @@
+include requirements.txt
+include kross/archs.yaml
+include kross/qemu/*
