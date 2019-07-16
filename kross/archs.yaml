@@ -32,3 +32,8 @@ archs:
     os: linux
     arch: 386
     qemu: i386
+
+  - name: ppc64le
+    os: linux
+    arch: ppc64le
+    qemu: ppc64le

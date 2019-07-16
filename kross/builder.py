@@ -1,21 +1,23 @@
-# pylint: disable=missing-docstring
-
+import json
+import os
 import platform
 
 import attr
 import click
 import subprocess32 as subprocess
 
+from kross.utils import echo, get_std
+
 
 @attr.s
 class Builder(object):
     def init(self):
-        click.echo("Initializing kross. You may be prompted for sudo password")
+        echo("Initializing kross. You may be prompted for sudo password")
         self.check_builder()
         self.login_registry()
         self.register_binfmt_misc()
         self.check_manifest_cmd()
-        click.echo("kross initialization complete")
+        echo("kross initialization complete")
 
     @staticmethod
     def check_builder():
@@ -30,10 +32,7 @@ Cannot run kross on this machine.""".format(arch))
     def login_registry():
         try:
             subprocess.run(
-                ["docker", "login"],
-                check=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+                ["docker", "login"], check=True, stdout=get_std(), stderr=get_std()
             )
         except subprocess.CalledProcessError:
             # fmt: off
@@ -54,8 +53,8 @@ Please login with `docker login` command.""")
                     "multiarch/qemu-user-static:register",
                 ],
                 check=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+                stdout=get_std(),
+                stderr=get_std(),
             )
         except subprocess.CalledProcessError:
             # fmt: off
@@ -68,13 +67,14 @@ Please register it with \
     def check_manifest_cmd():
         try:
             subprocess.run(
-                ["docker", "manifest"],
-                check=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+                ["docker", "manifest"], check=True, stdout=get_std(), stderr=get_std()
             )
         except subprocess.CalledProcessError:
-            # fmt: off
-            raise click.ClickException("""Could not execute `docker manifest` command.
-Please see documentation on https://docs.docker.com/engine/reference/commandline/manifest""")
-            # fmt: on
+            docker_config = "{}/{}".format(
+                os.path.expanduser("~"), ".docker/config.json"
+            )
+            with click.open_file(docker_config, "r+") as file:
+                config = json.load(file)
+                config.update({"experimental": "enabled"})
+                file.seek(0)
+                json.dump(config, file)

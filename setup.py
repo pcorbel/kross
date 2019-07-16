@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from setuptools import find_packages, setup
 
 
@@ -18,12 +15,12 @@ def get_description():
 # Setup
 setup(
     name="kross",
-    version="1.0.2",
+    version="1.0.3",
     license="apache-2.0",
     author="pcorbel",
     author_email="pierrot.corbel@gmail.com",
     url="https://github.com/pcorbel/kross",
-    download_url="https://github.com/pcorbel/kross/archive/v1.0.2.tar.gz",
+    download_url="https://github.com/pcorbel/kross/archive/v1.0.3.tar.gz",
     description='A simple CLI to "multi-arch all the things"',
     long_description=get_description(),
     long_description_content_type="text/markdown",

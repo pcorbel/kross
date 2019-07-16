@@ -1,5 +1,3 @@
-# pylint: disable=missing-docstring
-
 import click
 
 from kross.base_build import BaseBuild
@@ -7,6 +5,7 @@ from kross.base_push import BasePush
 from kross.builder import Builder
 from kross.qemu_build import QEMUBuild
 from kross.qemu_push import QEMUPush
+from kross.utils import echo
 
 
 @click.group()
@@ -23,9 +22,9 @@ def init():
 @main.command(context_settings={"ignore_unknown_options": True})
 @click.argument("build_args", nargs=-1)
 def build(build_args):
-    click.echo("Detecting configuration for base build...")
+    echo("Detecting configuration for base build...", verbose_only=True)
     base_build = BaseBuild(build_args=build_args)
-    click.echo(base_build)
+    echo(base_build, verbose_only=True)
 
     for qemu_arch in base_build.qemu_archs:
         qemu_build = QEMUBuild(
@@ -34,55 +33,49 @@ def build(build_args):
             arch=qemu_arch.get("name"),
             qemu_arch=qemu_arch.get("qemu"),
         )
-        # fmt: off
-        click.echo("""
-Starting QEMU build {} {}""".format(qemu_arch.get("name"), qemu_build))
-        # fmt: on
+        echo(
+            "kross building for arch {}... ".format(qemu_arch.get("name")),
+            new_line=False,
+        )
+        echo(qemu_build, verbose_only=True)
         try:
             qemu_build.build()
-        except click.ClickException as e:
-            click.echo("Error: {}".format(e))
+            echo("Done")
+        except click.ClickException as error:
+            echo("Error: {}".format(error))
             qemu_build.clean_up()
             continue
-    # fmt: off
-    click.echo("""
-kross build complete.""")
-    # fmt: on
+    echo("kross build complete.")
 
 
 @main.command(context_settings={"ignore_unknown_options": True})
 @click.argument("push_args", nargs=-1)
 def push(push_args):
-    click.echo("Detecting configuration for base push...")
+    echo("Detecting configuration for base push...", verbose_only=True)
     base_push = BasePush(push_args=push_args)
-    click.echo(base_push)
+    echo(base_push, verbose_only=True)
     base_push.remove_manifest_directory()
 
     for qemu_arch in base_push.qemu_archs:
         qemu_push = QEMUPush(push_args=push_args, base_push=base_push, arch=qemu_arch)
 
-        # fmt: off
-        click.echo("""
-Starting QEMU push {} {}""".format(qemu_arch.get("name"), qemu_push))
-        # fmt: on
+        echo(
+            "kross pushing for arch {}... ".format(qemu_arch.get("name")),
+            new_line=False,
+        )
+        echo(qemu_push, verbose_only=True)
         try:
             qemu_push.push()
-        except click.ClickException as e:
-            click.echo("Error: {}".format(e))
+            echo("Done")
+        except click.ClickException as error:
+            echo("Error: {}".format(error))
             continue
-    # fmt: off
-    click.echo("""
-Pushing manifest""")
-    # fmt: on
+    echo("kross pushing manifest list.")
     base_push.exec_push_manifest()
-
-    # fmt: off
-    click.echo("""
-kross push complete.""")
-    # fmt: on
+    echo("kross push complete.")
 
 
-cli = click.CommandCollection(sources=[main])
+cli = click.CommandCollection(sources=[main])  # pylint: disable=invalid-name
 
 if __name__ == "__main__":
     cli()

@@ -1,5 +1,3 @@
-# pylint: disable=missing-docstring
-
 import os
 import re
 import shutil
@@ -8,6 +6,8 @@ import attr
 import click
 import subprocess32 as subprocess
 import yaml
+
+from kross.utils import echo, get_std
 
 
 @attr.s
@@ -49,7 +49,7 @@ Please pass it in the <repository/image_name:image_tag> format.""")
         return push_manifest_cmd
 
     def remove_manifest_directory(self):
-        click.echo("""Purging manifest directory.""")
+        echo("""Purging manifest directory.""", verbose_only=True)
         shutil.rmtree(path=self.manifest_directory, ignore_errors=True)
 
     def exec_push_manifest(self):
@@ -57,8 +57,8 @@ Please pass it in the <repository/image_name:image_tag> format.""")
             subprocess.run(
                 self.push_manifest_cmd.split(),
                 check=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+                stdout=get_std(),
+                stderr=get_std(),
             )
         except subprocess.CalledProcessError:
             raise click.ClickException("Cannot push manifest list to registry.")

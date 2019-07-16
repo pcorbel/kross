@@ -74,18 +74,16 @@ kross will try to build images for the following architectures:
 * Check your machine configuration
 `kross init`
 
-* Clone the project
-`git clone https://github.com/pcorbel/kross.git`
-
-* Go to the example directory
-`cd kross/docs/example`
-
 * Run the kross build
-`kross build -t <your dockerhub id>/hello-world:v0.1.0 .`
+`kross build -t kross-world:v0.1.0 https://raw.githubusercontent.com/pcorbel/kross/master/docs/example/Dockerfile`
 
 * Run the kross push
-`kross push <your dockerhub id>/hello-world:v0.1.0`
+`kross push kross-world:v0.1.0`
 
-* Check images availability on your Dockerhub account
+* Check images availability on your [Dockerhub account](https://hub.docker.com/)
 
-`https://cloud.docker.com/u/<your dockerhub id>/repository/docker/<your dockerhub id>/hello-world`
+* Run your image anywhere
+
+`docker run --rm kross-world:v0.1.0`
+
+Example image available [here](https://cloud.docker.com/u/pcorbel/repository/docker/pcorbel/kross-world)

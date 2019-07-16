@@ -1,8 +1,8 @@
-# pylint: disable=missing-docstring
-
 import attr
 import click
 import subprocess32 as subprocess
+
+from kross.utils import get_std
 
 
 @attr.s
@@ -65,10 +65,7 @@ class QEMUPush(object):
     def exec_push(self):
         try:
             subprocess.run(
-                self.push_cmd.split(),
-                check=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+                self.push_cmd.split(), check=True, stdout=get_std(), stderr=get_std()
             )
         except subprocess.CalledProcessError:
             # fmt: off
@@ -79,10 +76,7 @@ Passing.""".format(self.qemu_registry_target))
     def exec_amend(self):
         try:
             subprocess.run(
-                self.amend_cmd.split(),
-                check=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+                self.amend_cmd.split(), check=True, stdout=get_std(), stderr=get_std()
             )
         except subprocess.CalledProcessError:
             # fmt: off
@@ -95,8 +89,8 @@ Passing.""".format(self.qemu_registry_target))
             subprocess.run(
                 self.annotate_cmd.split(),
                 check=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+                stdout=get_std(),
+                stderr=get_std(),
             )
         except subprocess.CalledProcessError:
             # fmt: off

@@ -1,5 +1,3 @@
-# pylint: disable=missing-docstring
-
 import os
 import re
 import shutil
@@ -7,6 +5,8 @@ import shutil
 import attr
 import click
 import subprocess32 as subprocess
+
+from kross.utils import echo, get_std
 
 
 @attr.s
@@ -31,7 +31,7 @@ class QEMUBuild(object):
         self.clean_up()
 
     def clean_up(self):
-        click.echo("""Cleaning up build {}.""".format(self.arch))
+        echo("""Cleaning up build {}.""".format(self.arch), verbose_only=True)
         self.remove_qemu_dockerfile()
         self.remove_qemu_tarball()
 
@@ -93,8 +93,8 @@ class QEMUBuild(object):
             subprocess.run(
                 ["docker", "pull", self.qemu_image],
                 check=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+                stdout=get_std(),
+                stderr=get_std(),
             )
         except subprocess.CalledProcessError:
             # fmt: off
@@ -136,10 +136,7 @@ Passing.""".format(self.qemu_image))
     def exec_build(self):
         try:
             subprocess.run(
-                self.build_cmd.split(),
-                check=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+                self.build_cmd.split(), check=True, stdout=get_std(), stderr=get_std()
             )
         except subprocess.CalledProcessError:
             # fmt: off
