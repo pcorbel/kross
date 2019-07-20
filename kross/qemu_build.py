@@ -24,14 +24,16 @@ class QEMUBuild(object):
     build_cmd = attr.ib()
 
     def build(self):
-        self.pull_qemu_image()
-        self.generate_qemu_dockerfile()
-        self.import_qemu_tarball_in_context()
-        self.exec_build()
-        self.clean_up()
+        try:
+            self.pull_qemu_image()
+            self.generate_qemu_dockerfile()
+            self.import_qemu_tarball_in_context()
+            self.exec_build()
+        except click.ClickException as error:
+            echo("Error when building {}: {}".format(self.arch, error))
 
     def clean_up(self):
-        echo("""Cleaning up build {}.""".format(self.arch), verbose_only=True)
+        echo("Cleaning up build {}.".format(self.arch), verbose_only=True)
         self.remove_qemu_dockerfile()
         self.remove_qemu_tarball()
 

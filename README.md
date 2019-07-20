@@ -47,6 +47,8 @@ Because Raspberry Pi are arm-based and 90% of images on Dockerhub are amd64-base
 
 ![](docs/1@2x.png)
 
+To know more, read the [full article](https://medium.com/@pierrot.corbel/kross-arch-all-the-things-2dcdee09da71).
+
 # How kross is working ?
 
 kross is based upon the [qemu library](https://www.qemu.org/) to build multiple architectures images on a amd64-based host machine.
@@ -87,3 +89,8 @@ kross will try to build images for the following architectures:
 `docker run --rm kross-world:v0.1.0`
 
 Example image available [here](https://cloud.docker.com/u/pcorbel/repository/docker/pcorbel/kross-world)
+
+# Tips and tricks
+
+To know exactly what is happening while kross is working
+`export KROSS_VERBOSE=true`

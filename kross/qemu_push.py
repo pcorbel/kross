@@ -2,7 +2,7 @@ import attr
 import click
 import subprocess32 as subprocess
 
-from kross.utils import get_std
+from kross.utils import echo, get_std
 
 
 @attr.s
@@ -18,9 +18,12 @@ class QEMUPush(object):
     annotate_cmd = attr.ib()
 
     def push(self):
-        self.exec_push()
-        self.exec_amend()
-        self.exec_annotate()
+        try:
+            self.exec_push()
+            self.exec_amend()
+            self.exec_annotate()
+        except click.ClickException as error:
+            echo("Error when pushing {}: {}".format(self.arch.get("name"), error))
 
     @qemu_registry_target.default
     def default_qemu_registry_target(self):

@@ -2,6 +2,11 @@
 
 [PyPI History](https://pypi.org/project/kross/#history)
 
+## 1.0.4
+
+* Parallelize the builds and pushes across multiple processes to drastically reduce build and push times
+* Fix a bug where only manifests for Dockerhub where purged
+
 ## 1.0.3
 
 * Simplify `kross init` command

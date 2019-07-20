@@ -30,11 +30,22 @@ Please pass it in the <repository/image_name:image_tag> format.""")
 
     @manifest_directory.default
     def default_manifest_directory(self):
-        manifest_directory = "{}/.docker/manifests/docker.io_{}".format(
+        # Generic registry handling
+        manifest_directory = "{}/.docker/manifests/{}".format(
             os.path.expanduser("~"),
             self.registry_target.replace("/", "_").replace(":", "-"),
         )
-        return manifest_directory
+        if os.path.exists(manifest_directory):
+            return manifest_directory
+
+        # Default non-explicit registry handling
+        else:
+            manifest_directory = "{}/.docker/manifests/docker.io_{}".format(
+                os.path.expanduser("~"),
+                self.registry_target.replace("/", "_").replace(":", "-"),
+            )
+        if os.path.exists(manifest_directory):
+            return manifest_directory
 
     @qemu_archs.default
     def default_qemu_archs(self):  # pylint: disable=no-self-use
@@ -49,7 +60,7 @@ Please pass it in the <repository/image_name:image_tag> format.""")
         return push_manifest_cmd
 
     def remove_manifest_directory(self):
-        echo("""Purging manifest directory.""", verbose_only=True)
+        echo("Purging manifest directory.", verbose_only=True)
         shutil.rmtree(path=self.manifest_directory, ignore_errors=True)
 
     def exec_push_manifest(self):
